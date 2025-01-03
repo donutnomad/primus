@@ -7,10 +7,10 @@ import (
 )
 
 type AccessToken struct {
-	Name        string
-	DelayMs     int64 // milliseconds
-	TimeLimitMs int64 // milliseconds
-	Groups      []*AccessGroup
+	Name        string         `json:"name"`
+	DelayMs     int64          `json:"delay_ms"`      // milliseconds
+	TimeLimitMs int64          `json:"time_limit_ms"` // milliseconds
+	Groups      []*AccessGroup `json:"groups"`
 }
 
 func (t *AccessToken) Serialize(p *Payload) {

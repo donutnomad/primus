@@ -2,13 +2,30 @@ package primus
 
 import (
 	"bytes"
+	"encoding/hex"
+	"encoding/json"
 	"github.com/samber/lo"
 )
 
 type AccessGroup struct {
-	Name       string
-	Quorum     int
-	PublicKeys []Publickey
+	Name       string      `json:"name"`
+	Quorum     int         `json:"quorum"`
+	PublicKeys []Publickey `json:"public_keys"`
+}
+
+func (g AccessGroup) MarshalJSON() ([]byte, error) {
+	var obj = struct {
+		Name       string   `json:"name"`
+		Quorum     int      `json:"quorum"`
+		PublicKeys []string `json:"public_keys"`
+	}{
+		Name:   g.Name,
+		Quorum: g.Quorum,
+		PublicKeys: lo.Map(g.PublicKeys, func(item Publickey, index int) string {
+			return hex.EncodeToString(item.GetEncoded())
+		}),
+	}
+	return json.Marshal(obj)
 }
 
 func (g *AccessGroup) Count(inputAsn1PubKey [][]byte) int {
